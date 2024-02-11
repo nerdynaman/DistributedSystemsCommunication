@@ -26,7 +26,6 @@ def worker_thread(context=None):
 	while True:
 		request = socket.recv_string()
 		request = request.split()
-		print(f"Request: {request}")
 
 		if request[0] == "JOIN":
 			# message = "JOIN " + userUUID
