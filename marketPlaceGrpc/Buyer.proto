@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package buyer;
+
+message NotificationRequest{
+    string Notification = 1;
+}
+
+message NotificationResponse{
+    enum Status {
+        SUCCESS = 0;
+        FAILED = 1;
+    }
+    Status status = 1;
+}
+
+service Buyer {
+    rpc Notification_Print(NotificationRequest) returns (NotificationResponse);
+}

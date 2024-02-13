@@ -5,17 +5,19 @@ import zmq
 groups = {} #key: group name, value: group ip and port -> {'groupName'->UUID : ('groupIP'->IPaddr, groupPort->int)}
 loggedGroups = set() # set of groups the user has joined
 userUUID = str(uuid.uuid4())
-
+msgServerIP = None
 def getGroups():
 
 	"""
 	user requests for the list of groups along with their ip and port from the message server
 	format of array recieved: [ [groupName, groupIP, groupPort], [groupName, groupIP, groupPort], ...]
 	"""
-
+	global msgServerIP
 	context = zmq.Context()
 	socket = context.socket(zmq.REQ)
-	socket.connect("tcp://localhost:5555")
+	if not msgServerIP:
+		msgServerIP = input("Enter the IP of the message server: ")
+	socket.connect(f"tcp://{msgServerIP}:5555")
 
 	global groups
 	socket.send_string(f"GET_GROUPS {userUUID}")
@@ -99,7 +101,7 @@ def joinGroup():
 	Join a group by entering the group number
 	"""
 	global loggedGroups
-	print("Enter the group number you want to join: ")
+	print("Enter the group number you want to join: ", end=" ")
 	groupNumber = int(input())
 	groupName = list(groups.keys())[groupNumber - 1]
 	groupIP, groupPort = groups[groupName]
