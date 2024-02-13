@@ -112,9 +112,10 @@ def main():
 	interface = input("Enter the interface name: ")
 	groupIP = ni.ifaddresses(interface)[ni.AF_INET][0]['addr']
 	groupPort = int(input("Enter the port number: "))
+	msgServerIP = input("Enter the message server IP: ")
 	
 	# register the group with the message server
-	groupRegisterRequest(groupName, groupIP, groupPort)
+	groupRegisterRequest(groupName, groupIP, groupPort, msgServerIP)
 	print("Group registered")
 	context = zmq.Context.instance()
 	clients = context.socket(zmq.ROUTER) 
@@ -138,17 +139,17 @@ if __name__ == "__main__":
 	interface = input("Enter the interface name: ")
 	groupIP = ni.ifaddresses(interface)[ni.AF_INET][0]['addr']
 	groupPort = int(input("Enter the port number: "))
+	msgServerIP = input("Enter the message server IP: ")
 	
 	# register the group with the message server
-	groupRegisterRequest(groupName, groupIP, groupPort)
+	groupRegisterRequest(groupName, groupIP, groupPort, msgServerIP)
 	print("Group registered")
 	context = zmq.Context.instance()
 	clients = context.socket(zmq.ROUTER) 
-	clients.bind(f"tcp://127.0.0.1:{int(groupPort)}")
+	clients.bind(f"tcp://{groupIP}:{int(groupPort)}")
 	workers = context.socket(zmq.DEALER)
 	workers.bind("inproc://workers")
 	print("Device started")
 	for i in range(THREAD_COUNT):
 		Thread(target=worker_thread).start()
 	zmq.device(zmq.QUEUE, clients, workers)
-
