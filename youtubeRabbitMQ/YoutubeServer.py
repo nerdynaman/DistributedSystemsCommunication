@@ -5,8 +5,8 @@ class YoutubeServer:
     """
     Server class to handle user and youtuber requests
     """
-    def __init__(self):
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    def __init__(self, ip='localhost'):
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(ip))
         self.channel = self.connection.channel()
 
         self.channel.queue_declare(queue='user_requests')
@@ -95,4 +95,6 @@ class YoutubeServer:
                 self.channel.basic_publish(exchange='', routing_key=user, body=json.dumps(notification))
 
 if __name__ == '__main__':
-    youtube_server = YoutubeServer()
+    # Taking input of the IP address of the RabbitMQ server
+    ip = input("Enter the IP address of the RabbitMQ server: ")
+    youtube_server = YoutubeServer(ip)

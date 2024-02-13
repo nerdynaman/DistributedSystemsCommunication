@@ -7,11 +7,11 @@ class Youtuber:
     """
     Youtuber class to publish videos to the queue.
     """
-    def __init__(self, youtuber_name, video_name):
+    def __init__(self, youtuber_name, video_name, ip='localhost'):
         self.youtuber_name = youtuber_name
         self.video_name = video_name
 
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(ip))
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue='youtuber_requests')
 
@@ -64,5 +64,8 @@ if __name__ == '__main__':
     else:
         youtuber_name = sys.argv[1]
         video_name = ' '.join(sys.argv[2:])
-        youtuber = Youtuber(youtuber_name, video_name)
+
+        # Taking input of the IP address of the RabbitMQ server
+        ip = input("Enter the IP address of the RabbitMQ server: ")
+        youtuber = Youtuber(youtuber_name, video_name, ip)
         youtuber.publish_video()
