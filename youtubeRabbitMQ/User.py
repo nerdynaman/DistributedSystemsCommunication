@@ -6,10 +6,10 @@ class User:
     """
     User class to subscribe to youtubers and receive notifications
     """
-    def __init__(self, user_name):
+    def __init__(self, user_name, ip='localhost'):
         self.user_name = user_name
 
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(ip))
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue='user_requests')
         self.channel.queue_declare(queue=user_name)
@@ -48,7 +48,10 @@ if __name__ == '__main__':
         print('Usage: python User.py <UserName> [s/u YoutuberName]')
     else:
         user_name = sys.argv[1]
-        user = User(user_name)
+
+        # Taking input of IP address of the RabbitMQ server
+        ip = input("Enter the IP address of the RabbitMQ server: ")
+        user = User(user_name, ip)
 
         if len(sys.argv) == 4:
             action = sys.argv[2].lower()
