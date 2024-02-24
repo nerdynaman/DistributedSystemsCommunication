@@ -38,8 +38,8 @@ class YoutubeServer:
 
         if youtuber is not None:
             if youtuber not in self.youtubers:
-                print(f"{youtuber} added to youtubers list")
-                self.youtubers[youtuber] = []
+                print(f"{youtuber} does not exit")
+                return
 
         if subscribe is not None:
             print(f"{user} logged in")
